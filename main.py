@@ -2,46 +2,90 @@ import pyaudio
 import wave
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib.animation import FuncAnimation
 
-CHUNK = 1024
-FORMAT = pyaudio.paInt16
-CHANNELS = 2
-RATE = 44100
-RECORD_SECONDS = 5
-WAVE_OUTPUT_FILENAME = "output.wav"
+class Audio:
+    """wrapper for easy audio files manipulation."""
+    def __init__(self):
+        return
 
-p = pyaudio.PyAudio()
+    def read(self, filename, chunk_size=CHUNK_SIZE):
+        wf = wave.open(filename, 'rb')
+        p = pyaudio.PyAudio()
+        stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
+                channels=wf.getnchannels(),
+                rate=wf.getframerate(),
+                output=True)
+        data = wf.readframes(CHUNK_SIZE)
+        while data != '':
+            yield data
+            data = wf.readframes(CHUNK_SIZE)
 
-stream = p.open(format=FORMAT,
-                channels=CHANNELS,
-                rate=RATE,
-                input=True,
-                frames_per_buffer=CHUNK)
+if __name__ == '__main__':
+    a = Audio()
+    a.
 
-print("* recording")
-
-frames = []
-
-for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-    data = stream.read(CHUNK)
-    frames.append(data)
+    
+        
 
 
-# audio_data = np.array(data)
-# audio_data.reshape((1, data.shape[0]*data.shape[1]))
-print(data)
-plt.plot(data[0])
-plt.show();
+# CHUNK = 44100
+# FORMAT = pyaudio.paInt16
+# CHANNELS = 1
+# RATE = 44100
+# RECORD_SECONDS = 5
+# WAVE_OUTPUT_FILENAME = "output.wav"
 
-print("* done recording")
+# p = pyaudio.PyAudio()
 
-stream.stop_stream()
-stream.close()
-p.terminate()
+# stream = p.open(format=FORMAT,
+#                 channels=CHANNELS,
+#                 rate=RATE,
+#                 input=True,
+#                 frames_per_buffer=CHUNK)
 
-wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
-wf.setnchannels(CHANNELS)
-wf.setsampwidth(p.get_sample_size(FORMAT))
-wf.setframerate(RATE)
-wf.writeframes(b''.join(frames))
-wf.close()
+# print("* recording")
+
+# stream.start_stream()
+
+# # for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+# def get_data(i):
+    
+#     ax.cla()
+#     ax.plot(data)
+
+# def init():
+#     ax.set_ylim(-1e5, 1e5)
+#     ax.set_xlim(0, 44100)
+#     del xdata[:]
+#     del ydata[:]
+#     line.set_data(xdata, ydata)
+#     return line,
+
+# fig, ax = plt.subplots()
+# line, = ax.plot([], [], lw=2)
+# xdata, ydata = [], []
+
+# def run(i):
+#     ydata = np.frombuffer(stream.read(44100), dtype=np.int16)
+#     xdata = np.arange(len(ydata))
+#     print(ydata)
+#     line.set_data(xdata, ydata)
+#     return line,
+
+# ani = FuncAnimation(fig, run, interval=1000, init_func=init, blit=True)
+
+# plt.show()
+
+# print("* done recording")
+
+# stream.stop_stream()
+# stream.close()
+# p.terminate()
+
+# wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
+# wf.setnchannels(CHANNELS)
+# wf.setsampwidth(p.get_sample_size(FORMAT))
+# wf.setframerate(RATE)
+# wf.writeframes(b''.join(frames))
+# wf.close()
